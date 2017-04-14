@@ -14,6 +14,11 @@
 		920E9A2A1EA067470041B945 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 920E9A281EA067470041B945 /* LaunchScreen.storyboard */; };
 		920E9A351EA067470041B945 /* SLPageView__Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920E9A341EA067470041B945 /* SLPageView__Tests.swift */; };
 		920E9A401EA067470041B945 /* SLPageView__UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920E9A3F1EA067470041B945 /* SLPageView__UITests.swift */; };
+		920E9A5E1EA06A160041B945 /* SLContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920E9A5A1EA06A160041B945 /* SLContentView.swift */; };
+		920E9A5F1EA06A160041B945 /* SLPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920E9A5B1EA06A160041B945 /* SLPageView.swift */; };
+		920E9A601EA06A160041B945 /* SLTitleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920E9A5C1EA06A160041B945 /* SLTitleStyle.swift */; };
+		920E9A611EA06A160041B945 /* SLTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920E9A5D1EA06A160041B945 /* SLTitleView.swift */; };
+		920E9A631EA06A280041B945 /* UIColor-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920E9A621EA06A280041B945 /* UIColor-Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +52,11 @@
 		920E9A3B1EA067470041B945 /* SLPageView设计UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SLPageView设计UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		920E9A3F1EA067470041B945 /* SLPageView__UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SLPageView__UITests.swift; sourceTree = "<group>"; };
 		920E9A411EA067470041B945 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		920E9A5A1EA06A160041B945 /* SLContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLContentView.swift; sourceTree = "<group>"; };
+		920E9A5B1EA06A160041B945 /* SLPageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLPageView.swift; sourceTree = "<group>"; };
+		920E9A5C1EA06A160041B945 /* SLTitleStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLTitleStyle.swift; sourceTree = "<group>"; };
+		920E9A5D1EA06A160041B945 /* SLTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLTitleView.swift; sourceTree = "<group>"; };
+		920E9A621EA06A280041B945 /* UIColor-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor-Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +107,7 @@
 		920E9A1E1EA067470041B945 /* SLPageView设计 */ = {
 			isa = PBXGroup;
 			children = (
+				920E9A591EA069DF0041B945 /* SLPageView */,
 				920E9A1F1EA067470041B945 /* AppDelegate.swift */,
 				920E9A211EA067470041B945 /* ViewController.swift */,
 				920E9A231EA067470041B945 /* Main.storyboard */,
@@ -123,6 +134,18 @@
 				920E9A411EA067470041B945 /* Info.plist */,
 			);
 			path = "SLPageView设计UITests";
+			sourceTree = "<group>";
+		};
+		920E9A591EA069DF0041B945 /* SLPageView */ = {
+			isa = PBXGroup;
+			children = (
+				920E9A5A1EA06A160041B945 /* SLContentView.swift */,
+				920E9A5B1EA06A160041B945 /* SLPageView.swift */,
+				920E9A5C1EA06A160041B945 /* SLTitleStyle.swift */,
+				920E9A5D1EA06A160041B945 /* SLTitleView.swift */,
+				920E9A621EA06A280041B945 /* UIColor-Extension.swift */,
+			);
+			path = SLPageView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -261,6 +284,11 @@
 			files = (
 				920E9A221EA067470041B945 /* ViewController.swift in Sources */,
 				920E9A201EA067470041B945 /* AppDelegate.swift in Sources */,
+				920E9A611EA06A160041B945 /* SLTitleView.swift in Sources */,
+				920E9A601EA06A160041B945 /* SLTitleStyle.swift in Sources */,
+				920E9A5F1EA06A160041B945 /* SLPageView.swift in Sources */,
+				920E9A631EA06A280041B945 /* UIColor-Extension.swift in Sources */,
+				920E9A5E1EA06A160041B945 /* SLContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -505,6 +533,7 @@
 				920E9A461EA067470041B945 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		920E9A471EA067470041B945 /* Build configuration list for PBXNativeTarget "SLPageView设计Tests" */ = {
 			isa = XCConfigurationList;
@@ -513,6 +542,7 @@
 				920E9A491EA067470041B945 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		920E9A4A1EA067470041B945 /* Build configuration list for PBXNativeTarget "SLPageView设计UITests" */ = {
 			isa = XCConfigurationList;
@@ -521,6 +551,7 @@
 				920E9A4C1EA067470041B945 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
