@@ -43,7 +43,7 @@ class SLPageView: UIView {
         
         private func setupTitleView() {
             let titleFrame = CGRect(x: 0, y: 0, width: bounds.width, height: style.titleHeight)
-            titleView = SLTitleView(frame: titleFrame, titles: titles)
+            titleView = SLTitleView(frame: titleFrame, titles: titles, style: style)
             addSubview(titleView)
             titleView.backgroundColor = UIColor.randomColor()
         }
