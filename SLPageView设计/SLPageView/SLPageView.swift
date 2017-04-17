@@ -54,5 +54,8 @@ class SLPageView: UIView {
             let contentView = SLContentView(frame: contentFrame, childVcs: childVcs, parentVc: parentVc)
             addSubview(contentView)
             contentView.backgroundColor = UIColor.randomColor()
+            
+            // 2.让contentVIew成为titleView代理
+            titleView.delegate = contentView
         }
 }

@@ -79,3 +79,11 @@ extension SLContentView : UICollectionViewDataSource {
     }
 }
 
+// MARK:- 遵守SLTitleViewDelegate
+extension SLContentView : HYTitleViewDelegate {
+    func titleView(_ titleView: SLTitleView, targetIndex: Int) {
+        let indexPath = IndexPath(item: targetIndex, section: 0)
+        collectionView.scrollToItem(at: indexPath, at: .left, animated: false)
+    }
+}
+

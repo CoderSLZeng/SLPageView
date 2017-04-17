@@ -8,10 +8,18 @@
 
 import UIKit
 
+protocol HYTitleViewDelegate : class {
+    func titleView(_ titleView : SLTitleView, targetIndex : Int)
+}
+
 class SLTitleView: UIView {
 
     fileprivate var titles : [String]
     fileprivate var style : SLTitleStyle
+    
+    fileprivate lazy var currentIndex : Int = 0
+    
+    weak var delegate : HYTitleViewDelegate?
     
     fileprivate lazy var titleLabels : [UILabel] = [UILabel]()
     fileprivate lazy var scrollView : UIScrollView = {
@@ -61,6 +69,10 @@ extension SLTitleView {
             scrollView.addSubview(titleLabel)
             
             titleLabels.append(titleLabel)
+            
+            let tapGes = UITapGestureRecognizer(target: self, action: #selector(titleLabelClick(_:)))
+            titleLabel.addGestureRecognizer(tapGes)
+            titleLabel.isUserInteractionEnabled = true
         }
     }
     
@@ -90,5 +102,36 @@ extension SLTitleView {
         }
         
         scrollView.contentSize = style.isScrollEnable ? CGSize(width: titleLabels.last!.frame.maxX + style.itemMargin * 0.5, height: 0) : CGSize.zero
+    }
+}
+
+// MARK:- 监听事件
+extension SLTitleView {
+    @objc fileprivate func titleLabelClick(_ tapGes : UITapGestureRecognizer) {
+        // 1.取出用户点击的View
+        let targetLabel = tapGes.view as! UILabel
+        let sourceLabel = titleLabels[currentIndex]
+        
+        // 2.切换文字的颜色
+        targetLabel.textColor = style.selectColor
+        sourceLabel.textColor = style.normalColor
+        
+        // 3.记录下标值
+        currentIndex = targetLabel.tag
+        
+        // 4.通知ContentView进行调整
+        delegate?.titleView(self, targetIndex: currentIndex)
+        
+        // 5.调整位置
+        if style.isScrollEnable {
+            var offsetX = targetLabel.center.x - scrollView.bounds.width * 0.5
+            if offsetX < 0 {
+                offsetX = 0
+            }
+            if offsetX > (scrollView.contentSize.width - scrollView.bounds.width) {
+                offsetX = scrollView.contentSize.width - scrollView.bounds.width
+            }
+            scrollView.setContentOffset(CGPoint(x: offsetX, y : 0), animated: true)
+        }
     }
 }
