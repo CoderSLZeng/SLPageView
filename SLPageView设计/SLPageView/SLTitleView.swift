@@ -8,18 +8,18 @@
 
 import UIKit
 
-protocol HYTitleViewDelegate : class {
+protocol SLTitleViewDelegate : class {
     func titleView(_ titleView : SLTitleView, targetIndex : Int)
 }
 
 class SLTitleView: UIView {
-
+    
+    weak var delegate : SLTitleViewDelegate?
+    
     fileprivate var titles : [String]
     fileprivate var style : SLTitleStyle
     
     fileprivate lazy var currentIndex : Int = 0
-    
-    weak var delegate : HYTitleViewDelegate?
     
     fileprivate lazy var titleLabels : [UILabel] = [UILabel]()
     fileprivate lazy var scrollView : UIScrollView = {
@@ -67,7 +67,6 @@ extension SLTitleView {
             titleLabel.textColor = i == 0 ? style.selectColor : style.normalColor
             
             scrollView.addSubview(titleLabel)
-            
             titleLabels.append(titleLabel)
             
             let tapGes = UITapGestureRecognizer(target: self, action: #selector(titleLabelClick(_:)))
@@ -105,11 +104,26 @@ extension SLTitleView {
     }
 }
 
+
 // MARK:- 监听事件
 extension SLTitleView {
     @objc fileprivate func titleLabelClick(_ tapGes : UITapGestureRecognizer) {
         // 1.取出用户点击的View
         let targetLabel = tapGes.view as! UILabel
+        
+        // 2.调整title
+        adjustTitleLabel(targetIndex: targetLabel.tag)
+        
+        // 3.通知代理
+        delegate?.titleView(self, targetIndex: currentIndex)
+    }
+    
+    fileprivate func adjustTitleLabel(targetIndex : Int) {
+        
+        if targetIndex == currentIndex { return }
+        
+        // 1.取出Label
+        let targetLabel = titleLabels[targetIndex]
         let sourceLabel = titleLabels[currentIndex]
         
         // 2.切换文字的颜色
@@ -117,12 +131,9 @@ extension SLTitleView {
         sourceLabel.textColor = style.normalColor
         
         // 3.记录下标值
-        currentIndex = targetLabel.tag
+        currentIndex = targetIndex
         
-        // 4.通知ContentView进行调整
-        delegate?.titleView(self, targetIndex: currentIndex)
-        
-        // 5.调整位置
+        // 4.调整位置
         if style.isScrollEnable {
             var offsetX = targetLabel.center.x - scrollView.bounds.width * 0.5
             if offsetX < 0 {
@@ -135,3 +146,26 @@ extension SLTitleView {
         }
     }
 }
+
+
+// MARK:- 遵守SLContentViewDelegate
+extension SLTitleView : SLContentViewDelegate {
+    func contentView(_ contentView: SLContentView, targetIndex: Int) {
+        adjustTitleLabel(targetIndex: targetIndex)
+    }
+    
+    func contentView(_ contentView: SLContentView, targetIndex: Int, progress: CGFloat) {
+        // 1.取出Label
+        let targetLabel = titleLabels[targetIndex]
+        let sourceLabel = titleLabels[currentIndex]
+        
+        // 2.颜色渐变
+        let deltaRGB = UIColor.getRGBDelta(style.selectColor, style.normalColor)
+        let selectRGB = style.selectColor.getRGB()
+        let normalRGB = style.normalColor.getRGB()
+        targetLabel.textColor = UIColor(r: normalRGB.0 + deltaRGB.0 * progress, g: normalRGB.1 + deltaRGB.1 * progress, b: normalRGB.2 + deltaRGB.2 * progress)
+        sourceLabel.textColor = UIColor(r: selectRGB.0 - deltaRGB.0 * progress, g: selectRGB.1 - deltaRGB.1 * progress, b: selectRGB.2 - deltaRGB.2 * progress)
+    }
+    
+}
+
