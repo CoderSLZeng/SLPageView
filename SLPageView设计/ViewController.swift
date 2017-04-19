@@ -19,6 +19,8 @@ class ViewController: UIViewController {
         let titles = ["游戏", "娱乐", "趣玩", "美女", "颜值"]
         let style = SLTitleStyle()
         // style.titleHeight = 44
+//        style.isScrollEnable = true
+        style.isShowScrollLine = true
         
         // 2.计算所以的子控制器
         var childVcs = [UIViewController]()

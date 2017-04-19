@@ -28,6 +28,13 @@ class SLTitleView: UIView {
         scrollView.scrollsToTop = false
         return scrollView
     }()
+    fileprivate lazy var bottomLine : UIView = {
+        let bottomLine = UIView()
+        bottomLine.backgroundColor = self.style.scrollLineColor
+        bottomLine.frame.size.height = self.style.scrollLineHeight
+        bottomLine.frame.origin.y = self.bounds.height - self.style.scrollLineHeight
+        return bottomLine
+    }()
     
     init(frame: CGRect, titles : [String], style : SLTitleStyle) {
         self.titles = titles
@@ -55,6 +62,11 @@ extension SLTitleView {
         
         // 3.设置titleLabel的frame
         setupTitleLabelsFrame()
+        
+        // 4.添加滚动条
+        if style.isShowScrollLine {
+            scrollView.addSubview(bottomLine)
+        }
     }
     
     private func setupTitleLabels() {
@@ -88,6 +100,10 @@ extension SLTitleView {
                 w = (titles[i] as NSString).boundingRect(with: CGSize(width: CGFloat(MAXFLOAT), height: 0), options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName : label.font], context: nil).width
                 if i == 0 {
                     x = style.itemMargin * 0.5
+                    if style.isShowScrollLine {
+                        bottomLine.frame.origin.x = x
+                        bottomLine.frame.size.width = w
+                    }
                 } else {
                     let preLabel = titleLabels[i - 1]
                     x = preLabel.frame.maxX + style.itemMargin
@@ -95,6 +111,11 @@ extension SLTitleView {
             } else { // 不能滚动
                 w = bounds.width / CGFloat(count)
                 x = w * CGFloat(i)
+                
+                if i == 0 && style.isShowScrollLine {
+                    bottomLine.frame.origin.x = 0
+                    bottomLine.frame.size.width = w
+                }
             }
             
             label.frame = CGRect(x: x, y: y, width: w, height: h)
@@ -133,7 +154,7 @@ extension SLTitleView {
         // 3.记录下标值
         currentIndex = targetIndex
         
-        // 4.调整位置
+        // 4.调整标题位置
         if style.isScrollEnable {
             var offsetX = targetLabel.center.x - scrollView.bounds.width * 0.5
             if offsetX < 0 {
@@ -143,6 +164,14 @@ extension SLTitleView {
                 offsetX = scrollView.contentSize.width - scrollView.bounds.width
             }
             scrollView.setContentOffset(CGPoint(x: offsetX, y : 0), animated: true)
+        }
+        
+        // 5.调整bottomLine位置
+        if style.isShowScrollLine {
+            UIView.animate(withDuration: 0.25, animations: {
+                self.bottomLine.frame.origin.x = targetLabel.frame.origin.x
+                self.bottomLine.frame.size.width = targetLabel.frame.width
+            })
         }
     }
 }
@@ -165,7 +194,14 @@ extension SLTitleView : SLContentViewDelegate {
         let normalRGB = style.normalColor.getRGB()
         targetLabel.textColor = UIColor(r: normalRGB.0 + deltaRGB.0 * progress, g: normalRGB.1 + deltaRGB.1 * progress, b: normalRGB.2 + deltaRGB.2 * progress)
         sourceLabel.textColor = UIColor(r: selectRGB.0 - deltaRGB.0 * progress, g: selectRGB.1 - deltaRGB.1 * progress, b: selectRGB.2 - deltaRGB.2 * progress)
+        
+        // 3.bottomLine渐变过程
+        if style.isShowScrollLine {
+            let deltaX = targetLabel.frame.origin.x - sourceLabel.frame.origin.x
+            let deltaW = targetLabel.frame.width - sourceLabel.frame.width
+            bottomLine.frame.origin.x = sourceLabel.frame.origin.x + deltaX * progress
+            bottomLine.frame.size.width = sourceLabel.frame.width + deltaW * progress
+        }
     }
     
 }
-

@@ -23,6 +23,7 @@ class SLContentView: UIView {
     fileprivate var parentVc : UIViewController
     
     fileprivate var startOffsetX : CGFloat = 0
+    fileprivate var isForbidScroll : Bool = false
     fileprivate lazy var collectionView : UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = self.bounds.size
@@ -103,6 +104,9 @@ extension SLContentView : UICollectionViewDelegate {
     }
     
     private func contentEndScroll() {
+        // 0.判断是否是禁止状态
+        guard isForbidScroll else { return }
+        
         // 1.获取滚动到的位置
         let currentIndex = Int(collectionView.contentOffset.x / collectionView.bounds.width)
         
@@ -111,12 +115,15 @@ extension SLContentView : UICollectionViewDelegate {
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        
+        isForbidScroll = true
+        
         startOffsetX = scrollView.contentOffset.x
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // 0.判断和开始时的偏移量是否一致
-        guard startOffsetX != scrollView.contentOffset.x else {
+        guard startOffsetX != scrollView.contentOffset.x, !isForbidScroll else {
             return
         }
         
@@ -151,6 +158,8 @@ extension SLContentView : UICollectionViewDelegate {
 // MARK:- 遵守SLTitleViewDelegate
 extension SLContentView : SLTitleViewDelegate {
     func titleView(_ titleView: SLTitleView, targetIndex: Int) {
+        isForbidScroll = true
+        
         let indexPath = IndexPath(item: targetIndex, section: 0)
         collectionView.scrollToItem(at: indexPath, at: .left, animated: false)
     }
