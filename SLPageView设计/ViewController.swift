@@ -15,14 +15,34 @@ class ViewController: UIViewController {
         
         automaticallyAdjustsScrollViewInsets = false
         
+        testPageCollectionView()
+    }
+    
+    fileprivate func testPageCollectionView() {
+        let pageFrame = CGRect(x: 0, y: 100, width: view.bounds.width, height: 300)
+        
+        let titles = ["土豪", "热门", "专属", "常见"]
+        let style = SLTitleStyle()
+        style.isShowScrollLine = true
+        
+        let layout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 0
+        
+        let pageCollectionView = SLPageCollectionView(frame: pageFrame, titles: titles, style: style, isTitleInTop: false, layout: layout)
+        view.addSubview(pageCollectionView)
+    }
+    
+    fileprivate func tesetPageView() {
         // 1.标题
         let titles = ["游戏", "娱乐", "趣玩", "美女", "颜值"]
         let style = SLTitleStyle()
         // style.titleHeight = 44
-//        style.isScrollEnable = true
+        //        style.isScrollEnable = true
         style.isShowScrollLine = true
         
-        // 2.计算所以的子控制器
+        // 2.计算所有的子控制器
         var childVcs = [UIViewController]()
         for _ in 0..<titles.count {
             let vc = UIViewController()
