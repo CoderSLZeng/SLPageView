@@ -25,10 +25,12 @@ class ViewController: UIViewController {
         let style = SLTitleStyle()
         style.isShowScrollLine = true
         
-        let layout = UICollectionViewFlowLayout()
+        let layout = SLPageCollectionViewLayout()
         layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
+        layout.cols = 7
+        layout.rows = 3
         
         let pageCollectionView = SLPageCollectionView(frame: pageFrame, titles: titles, style: style, isTitleInTop: false, layout: layout)
         view.addSubview(pageCollectionView)

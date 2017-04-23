@@ -20,6 +20,7 @@
 		920E9A611EA06A160041B945 /* SLTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920E9A5D1EA06A160041B945 /* SLTitleView.swift */; };
 		920E9A631EA06A280041B945 /* UIColor-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 920E9A621EA06A280041B945 /* UIColor-Extension.swift */; };
 		9258DEA91EAB55E2004889A3 /* SLPageCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9258DEA81EAB55E2004889A3 /* SLPageCollectionView.swift */; };
+		92D5D4DC1EAC775F00551D44 /* SLPageCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D5D4DB1EAC775F00551D44 /* SLPageCollectionViewLayout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,7 @@
 		920E9A5D1EA06A160041B945 /* SLTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLTitleView.swift; sourceTree = "<group>"; };
 		920E9A621EA06A280041B945 /* UIColor-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor-Extension.swift"; sourceTree = "<group>"; };
 		9258DEA81EAB55E2004889A3 /* SLPageCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLPageCollectionView.swift; sourceTree = "<group>"; };
+		92D5D4DB1EAC775F00551D44 /* SLPageCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SLPageCollectionViewLayout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +148,7 @@
 				920E9A5C1EA06A160041B945 /* SLTitleStyle.swift */,
 				920E9A5D1EA06A160041B945 /* SLTitleView.swift */,
 				9258DEA81EAB55E2004889A3 /* SLPageCollectionView.swift */,
+				92D5D4DB1EAC775F00551D44 /* SLPageCollectionViewLayout.swift */,
 				920E9A621EA06A280041B945 /* UIColor-Extension.swift */,
 			);
 			path = SLPageView;
@@ -287,6 +290,7 @@
 			files = (
 				9258DEA91EAB55E2004889A3 /* SLPageCollectionView.swift in Sources */,
 				920E9A221EA067470041B945 /* ViewController.swift in Sources */,
+				92D5D4DC1EAC775F00551D44 /* SLPageCollectionViewLayout.swift in Sources */,
 				920E9A201EA067470041B945 /* AppDelegate.swift in Sources */,
 				920E9A611EA06A160041B945 /* SLTitleView.swift in Sources */,
 				920E9A601EA06A160041B945 /* SLTitleStyle.swift in Sources */,
