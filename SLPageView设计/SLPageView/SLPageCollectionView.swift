@@ -8,16 +8,23 @@
 
 import UIKit
 
-private let kCollectionViewCell = "kCollectionViewCell"
+protocol SLPageCollectionViewDataSource : class {
+    func numberOfSections(in pageCollectionView : SLPageCollectionView) -> Int
+    func pageCollectionView(_ collectionView: SLPageCollectionView, numberOfItemsInSection section: Int) -> Int
+    func pageCollectionView(_ pageCollectionView : SLPageCollectionView ,_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell
+}
 
 class SLPageCollectionView: UIView {
+    
+    weak var dataSource : SLPageCollectionViewDataSource?
     
     fileprivate var titles : [String]
     fileprivate var isTitleInTop : Bool
     fileprivate var style : SLTitleStyle
     fileprivate var layout : UICollectionViewFlowLayout
+    fileprivate var collectionView : UICollectionView!
     
-    init(frame: CGRect, titles : [String], style : SLTitleStyle, isTitleInTop : Bool, layout : UICollectionViewFlowLayout) {
+    init(frame: CGRect, titles : [String], style : SLTitleStyle, isTitleInTop : Bool, layout : SLPageCollectionViewLayout) {
         self.titles = titles
         self.style = style
         self.isTitleInTop = isTitleInTop
@@ -34,6 +41,7 @@ class SLPageCollectionView: UIView {
 }
 
 
+// MARK:- 设置UI界面
 extension SLPageCollectionView {
     fileprivate func setupUI() {
         // 1.创建titleView
@@ -55,9 +63,8 @@ extension SLPageCollectionView {
         // 3.创建UICollectionView
         let collectionViewY = isTitleInTop ? style.titleHeight : 0
         let collectionViewFrame = CGRect(x: 0, y: collectionViewY, width: bounds.width, height: bounds.height - style.titleHeight - pageControlHeight)
-        let collectionView = UICollectionView(frame: collectionViewFrame, collectionViewLayout: layout)
+        collectionView = UICollectionView(frame: collectionViewFrame, collectionViewLayout: layout)
         collectionView.dataSource = self
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: kCollectionViewCell)
         collectionView.isPagingEnabled = true
         collectionView.showsHorizontalScrollIndicator = false
         addSubview(collectionView)
@@ -66,21 +73,29 @@ extension SLPageCollectionView {
 }
 
 
-extension SLPageCollectionView : UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 4
+// MARK:- 对外暴露的方法
+extension SLPageCollectionView {
+    func register(cell : AnyClass?, identifier : String) {
+        collectionView.register(cell, forCellWithReuseIdentifier: identifier)
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return Int(arc4random_uniform(30)) + 30
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: kCollectionViewCell, for: indexPath)
-        
-        cell.backgroundColor = UIColor.randomColor()
-        
-        return cell
+    func register(nib : UINib, identifier : String) {
+        collectionView.register(nib, forCellWithReuseIdentifier: identifier)
     }
 }
 
+
+// MARK:- UICollectionViewDataSource
+extension SLPageCollectionView : UICollectionViewDataSource {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return dataSource?.numberOfSections(in: self) ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return dataSource?.pageCollectionView(self, numberOfItemsInSection: section) ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        return dataSource!.pageCollectionView(self, collectionView, cellForItemAt: indexPath)
+    }
+}

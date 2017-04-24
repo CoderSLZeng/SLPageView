@@ -8,6 +8,8 @@
 
 import UIKit
 
+private let kEmoticonCell = "kEmoticonCell"
+
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
@@ -33,6 +35,10 @@ class ViewController: UIViewController {
         layout.rows = 3
         
         let pageCollectionView = SLPageCollectionView(frame: pageFrame, titles: titles, style: style, isTitleInTop: false, layout: layout)
+        
+        pageCollectionView.dataSource = self
+        pageCollectionView.register(cell: UICollectionViewCell.self, identifier: kEmoticonCell)
+        
         view.addSubview(pageCollectionView)
     }
     
@@ -55,9 +61,27 @@ class ViewController: UIViewController {
         // 3.pageView的frame
         let pageFrame = CGRect(x: 0, y: 64, width: view.bounds.width, height: view.bounds.height - 64)
         
-        // 4.创建HYPageView,并且添加到控制器的view中
+        // 4.创建SLPageView,并且添加到控制器的view中
         let pageView = SLPageView(frame: pageFrame, titles: titles, childVcs: childVcs, parentVc: self, style : style)
         view.addSubview(pageView)
+    }
+}
+
+extension ViewController : SLPageCollectionViewDataSource {
+    func numberOfSections(in pageCollectionView: SLPageCollectionView) -> Int {
+        return 4
+    }
+    
+    func pageCollectionView(_ collectionView: SLPageCollectionView, numberOfItemsInSection section: Int) -> Int {
+        return Int(arc4random_uniform(30)) + 25
+    }
+    
+    func pageCollectionView(_ pageCollectionView: SLPageCollectionView, _ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: kEmoticonCell, for: indexPath)
+        
+        cell.backgroundColor = UIColor.randomColor()
+        
+        return cell
     }
 }
 
