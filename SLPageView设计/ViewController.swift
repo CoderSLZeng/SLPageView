@@ -49,6 +49,7 @@ class ViewController: UIViewController {
         // style.titleHeight = 44
         //        style.isScrollEnable = true
         style.isShowScrollLine = true
+        style.isShowCover = true
         
         // 2.计算所有的子控制器
         var childVcs = [UIViewController]()

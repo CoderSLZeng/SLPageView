@@ -47,6 +47,14 @@ class SLTitleView: UIView {
         return splitView
     }()
     
+    fileprivate lazy var coverView : UIView = {
+        let coverView = UIView()
+        coverView.backgroundColor = self.style.coverBgColor
+        coverView.alpha = 0.7
+        return coverView
+    }()
+    
+    
     init(frame: CGRect, titles : [String], style : SLTitleStyle) {
         self.titles = titles
         self.style = style
@@ -81,6 +89,12 @@ extension SLTitleView {
         if style.isShowScrollLine {
             scrollView.addSubview(bottomLine)
         }
+        
+        // 6.设置遮盖的View
+        if style.isShowCover {
+            setupCoverView()
+        }
+
     }
     
     private func setupTitleLabels() {
@@ -137,6 +151,25 @@ extension SLTitleView {
         
         scrollView.contentSize = style.isScrollEnable ? CGSize(width: titleLabels.last!.frame.maxX + style.itemMargin * 0.5, height: 0) : CGSize.zero
     }
+    
+    fileprivate func setupCoverView() {
+        scrollView.insertSubview(coverView, at: 0)
+        let firstLabel = titleLabels[0]
+        var coverW = firstLabel.frame.width
+        let coverH = style.coverH
+        var coverX = firstLabel.frame.origin.x
+        let coverY = (bounds.height - coverH) * 0.5
+        
+        if style.isScrollEnable {
+            coverX -= style.coverMargin
+            coverW += style.coverMargin * 2
+        }
+        coverView.frame = CGRect(x: coverX, y: coverY, width: coverW, height: coverH)
+        
+        coverView.layer.cornerRadius = style.coverRadius
+        coverView.layer.masksToBounds = true
+    }
+
 }
 
 
@@ -184,7 +217,13 @@ extension SLTitleView {
         if style.isShowScrollLine {
             UIView.animate(withDuration: 0.25, animations: {
                 self.bottomLine.frame.origin.x = targetLabel.frame.origin.x
-                self.bottomLine.frame.size.width = targetLabel.frame.width
+//                self.bottomLine.frame.size.width = targetLabel.frame.width
+            })
+        }
+        
+        if style.isShowCover {
+            UIView.animate(withDuration: 0.25, animations: { 
+                self.coverView.frame.origin.x = targetLabel.frame.origin.x
             })
         }
     }

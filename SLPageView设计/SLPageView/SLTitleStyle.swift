@@ -30,4 +30,15 @@ class SLTitleStyle {
     var scrollLineHeight : CGFloat = 2
     /// 底部滚动条的颜色
     var scrollLineColor : UIColor = .orange
+    
+    /// 是否显示遮盖
+    var isShowCover : Bool = false
+    /// 遮盖背景颜色
+    var coverBgColor : UIColor = UIColor.lightGray
+    /// 文字&遮盖间隙
+    var coverMargin : CGFloat = 5
+    /// 遮盖的高度
+    var coverH : CGFloat = 25
+    /// 设置圆角大小
+    var coverRadius : CGFloat = 12
 }
