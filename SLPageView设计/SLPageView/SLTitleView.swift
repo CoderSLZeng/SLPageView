@@ -13,27 +13,38 @@ protocol SLTitleViewDelegate : class {
 }
 
 class SLTitleView: UIView {
-    
+    // MARK: 对外属性
     weak var delegate : SLTitleViewDelegate?
     
+    // MARK: 定义属性
     fileprivate var titles : [String]
     fileprivate var style : SLTitleStyle
-    
     fileprivate lazy var currentIndex : Int = 0
     
+    // MARK: 存储属性
     fileprivate lazy var titleLabels : [UILabel] = [UILabel]()
+    
     fileprivate lazy var scrollView : UIScrollView = {
         let scrollView = UIScrollView(frame: self.bounds)
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.scrollsToTop = false
         return scrollView
     }()
+    
     fileprivate lazy var bottomLine : UIView = {
         let bottomLine = UIView()
         bottomLine.backgroundColor = self.style.scrollLineColor
         bottomLine.frame.size.height = self.style.scrollLineHeight
         bottomLine.frame.origin.y = self.bounds.height - self.style.scrollLineHeight
         return bottomLine
+    }()
+    
+    fileprivate lazy var splitLineView : UIView = {
+        let splitView = UIView()
+        splitView.backgroundColor = UIColor.lightGray
+        let h : CGFloat = 0.5
+        splitView.frame = CGRect(x: 0, y: self.frame.height - h, width: self.frame.width, height: h)
+        return splitView
     }()
     
     init(frame: CGRect, titles : [String], style : SLTitleStyle) {
@@ -57,13 +68,16 @@ extension SLTitleView {
         // 1.将UIScrollVIew添加到view中
         addSubview(scrollView)
         
-        // 2.将titleLabel添加到UIScrollView中
+        // 2.添加底部分割线
+        addSubview(splitLineView)
+        
+        // 3.将titleLabel添加到UIScrollView中
         setupTitleLabels()
         
-        // 3.设置titleLabel的frame
+        // 4.设置titleLabel的frame
         setupTitleLabelsFrame()
         
-        // 4.添加滚动条
+        // 5.添加滚动条
         if style.isShowScrollLine {
             scrollView.addSubview(bottomLine)
         }

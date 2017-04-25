@@ -17,7 +17,7 @@ class ViewController: UIViewController {
         
         automaticallyAdjustsScrollViewInsets = false
         
-        testPageCollectionView()
+        tesetPageView()
     }
     
     fileprivate func testPageCollectionView() {
