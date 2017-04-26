@@ -217,13 +217,18 @@ extension SLTitleView {
         if style.isShowBottomLine {
             UIView.animate(withDuration: 0.25, animations: {
                 self.bottomLine.frame.origin.x = targetLabel.frame.origin.x
-//                self.bottomLine.frame.size.width = targetLabel.frame.width
+                self.bottomLine.frame.size.width = targetLabel.frame.width
             })
         }
         
+        // 6.遮盖移动
         if style.isShowCover {
-            UIView.animate(withDuration: 0.25, animations: { 
-                self.coverView.frame.origin.x = targetLabel.frame.origin.x
+            
+            let coverX = style.isScrollEnable ? (targetLabel.frame.origin.x - style.coverMargin) : targetLabel.frame.origin.x
+            let coverW = style.isScrollEnable ? (targetLabel.frame.width + style.coverMargin * 2) : targetLabel.frame.width
+            UIView.animate(withDuration: 0.15, animations: {
+                self.coverView.frame.origin.x = coverX
+                self.coverView.frame.size.width = coverW
             })
         }
     }
@@ -248,12 +253,18 @@ extension SLTitleView : SLContentViewDelegate {
         targetLabel.textColor = UIColor(r: normalRGB.0 + deltaRGB.0 * progress, g: normalRGB.1 + deltaRGB.1 * progress, b: normalRGB.2 + deltaRGB.2 * progress)
         sourceLabel.textColor = UIColor(r: selectRGB.0 - deltaRGB.0 * progress, g: selectRGB.1 - deltaRGB.1 * progress, b: selectRGB.2 - deltaRGB.2 * progress)
         
+        let moveTotalX = targetLabel.frame.origin.x - sourceLabel.frame.origin.x
+        let moveTotalW = targetLabel.frame.width - sourceLabel.frame.width
         // 3.bottomLine渐变过程
         if style.isShowBottomLine {
-            let deltaX = targetLabel.frame.origin.x - sourceLabel.frame.origin.x
-            let deltaW = targetLabel.frame.width - sourceLabel.frame.width
-            bottomLine.frame.origin.x = sourceLabel.frame.origin.x + deltaX * progress
-            bottomLine.frame.size.width = sourceLabel.frame.width + deltaW * progress
+            bottomLine.frame.origin.x = sourceLabel.frame.origin.x + moveTotalX * progress
+            bottomLine.frame.size.width = sourceLabel.frame.width + moveTotalW * progress
+        }
+        
+        // 4.计算cover的滚动
+        if style.isShowCover {
+            coverView.frame.size.width = style.isScrollEnable ? (sourceLabel.frame.width + 2 * style.coverMargin + moveTotalW * progress) : (sourceLabel.frame.width + moveTotalW * progress)
+            coverView.frame.origin.x = style.isScrollEnable ? (sourceLabel.frame.origin.x - style.coverMargin + moveTotalX * progress) : (sourceLabel.frame.origin.x + moveTotalX * progress)
         }
     }
     

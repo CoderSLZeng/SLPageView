@@ -25,7 +25,7 @@ class ViewController: UIViewController {
         
         let titles = ["土豪", "热门", "专属", "常见"]
         let style = SLTitleStyle()
-        style.isShowScrollLine = true
+        style.isShowBottomLine = true
         
         let layout = SLPageCollectionViewLayout()
         layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
@@ -48,7 +48,7 @@ class ViewController: UIViewController {
         let style = SLTitleStyle()
         // style.titleHeight = 44
         //        style.isScrollEnable = true
-        style.isShowScrollLine = true
+        style.isShowBottomLine = true
         style.isShowCover = true
         
         // 2.计算所有的子控制器
