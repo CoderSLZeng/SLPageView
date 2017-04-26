@@ -33,9 +33,9 @@ class SLTitleView: UIView {
     
     fileprivate lazy var bottomLine : UIView = {
         let bottomLine = UIView()
-        bottomLine.backgroundColor = self.style.scrollLineColor
-        bottomLine.frame.size.height = self.style.scrollLineHeight
-        bottomLine.frame.origin.y = self.bounds.height - self.style.scrollLineHeight
+        bottomLine.backgroundColor = self.style.bottomLineColor
+        bottomLine.frame.size.height = self.style.bottomLineHeight
+        bottomLine.frame.origin.y = self.bounds.height - self.style.bottomLineHeight
         return bottomLine
     }()
     
@@ -86,7 +86,7 @@ extension SLTitleView {
         setupTitleLabelsFrame()
         
         // 5.添加滚动条
-        if style.isShowScrollLine {
+        if style.isShowBottomLine {
             scrollView.addSubview(bottomLine)
         }
         
@@ -101,10 +101,10 @@ extension SLTitleView {
         for (i, title) in titles.enumerated() {
             let titleLabel = UILabel()
             titleLabel.text = title
-            titleLabel.font = UIFont.systemFont(ofSize: style.fontSize)
+            titleLabel.font = style.font
             titleLabel.tag = i
             titleLabel.textAlignment = .center
-            titleLabel.textColor = i == 0 ? style.selectColor : style.normalColor
+            titleLabel.textColor = i == 0 ? style.selectedColor : style.normalColor
             
             scrollView.addSubview(titleLabel)
             titleLabels.append(titleLabel)
@@ -127,20 +127,20 @@ extension SLTitleView {
             if style.isScrollEnable { // 可以滚动
                 w = (titles[i] as NSString).boundingRect(with: CGSize(width: CGFloat(MAXFLOAT), height: 0), options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName : label.font], context: nil).width
                 if i == 0 {
-                    x = style.itemMargin * 0.5
-                    if style.isShowScrollLine {
+                    x = style.titleMargin * 0.5
+                    if style.isShowBottomLine {
                         bottomLine.frame.origin.x = x
                         bottomLine.frame.size.width = w
                     }
                 } else {
                     let preLabel = titleLabels[i - 1]
-                    x = preLabel.frame.maxX + style.itemMargin
+                    x = preLabel.frame.maxX + style.titleMargin
                 }
             } else { // 不能滚动
                 w = bounds.width / CGFloat(count)
                 x = w * CGFloat(i)
                 
-                if i == 0 && style.isShowScrollLine {
+                if i == 0 && style.isShowBottomLine {
                     bottomLine.frame.origin.x = 0
                     bottomLine.frame.size.width = w
                 }
@@ -149,14 +149,14 @@ extension SLTitleView {
             label.frame = CGRect(x: x, y: y, width: w, height: h)
         }
         
-        scrollView.contentSize = style.isScrollEnable ? CGSize(width: titleLabels.last!.frame.maxX + style.itemMargin * 0.5, height: 0) : CGSize.zero
+        scrollView.contentSize = style.isScrollEnable ? CGSize(width: titleLabels.last!.frame.maxX + style.titleMargin * 0.5, height: 0) : CGSize.zero
     }
     
     fileprivate func setupCoverView() {
         scrollView.insertSubview(coverView, at: 0)
         let firstLabel = titleLabels[0]
         var coverW = firstLabel.frame.width
-        let coverH = style.coverH
+        let coverH = style.coverHeight
         var coverX = firstLabel.frame.origin.x
         let coverY = (bounds.height - coverH) * 0.5
         
@@ -195,7 +195,7 @@ extension SLTitleView {
         let sourceLabel = titleLabels[currentIndex]
         
         // 2.切换文字的颜色
-        targetLabel.textColor = style.selectColor
+        targetLabel.textColor = style.selectedColor
         sourceLabel.textColor = style.normalColor
         
         // 3.记录下标值
@@ -214,7 +214,7 @@ extension SLTitleView {
         }
         
         // 5.调整bottomLine位置
-        if style.isShowScrollLine {
+        if style.isShowBottomLine {
             UIView.animate(withDuration: 0.25, animations: {
                 self.bottomLine.frame.origin.x = targetLabel.frame.origin.x
 //                self.bottomLine.frame.size.width = targetLabel.frame.width
@@ -242,14 +242,14 @@ extension SLTitleView : SLContentViewDelegate {
         let sourceLabel = titleLabels[currentIndex]
         
         // 2.颜色渐变
-        let deltaRGB = UIColor.getRGBDelta(style.selectColor, style.normalColor)
-        let selectRGB = style.selectColor.getRGB()
+        let deltaRGB = UIColor.getRGBDelta(style.selectedColor, style.normalColor)
+        let selectRGB = style.selectedColor.getRGB()
         let normalRGB = style.normalColor.getRGB()
         targetLabel.textColor = UIColor(r: normalRGB.0 + deltaRGB.0 * progress, g: normalRGB.1 + deltaRGB.1 * progress, b: normalRGB.2 + deltaRGB.2 * progress)
         sourceLabel.textColor = UIColor(r: selectRGB.0 - deltaRGB.0 * progress, g: selectRGB.1 - deltaRGB.1 * progress, b: selectRGB.2 - deltaRGB.2 * progress)
         
         // 3.bottomLine渐变过程
-        if style.isShowScrollLine {
+        if style.isShowBottomLine {
             let deltaX = targetLabel.frame.origin.x - sourceLabel.frame.origin.x
             let deltaW = targetLabel.frame.width - sourceLabel.frame.width
             bottomLine.frame.origin.x = sourceLabel.frame.origin.x + deltaX * progress
