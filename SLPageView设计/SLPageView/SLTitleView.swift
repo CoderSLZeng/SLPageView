@@ -202,16 +202,7 @@ extension SLTitleView {
         currentIndex = targetIndex
         
         // 4.调整标题位置
-        if style.isScrollEnable {
-            var offsetX = targetLabel.center.x - scrollView.bounds.width * 0.5
-            if offsetX < 0 {
-                offsetX = 0
-            }
-            if offsetX > (scrollView.contentSize.width - scrollView.bounds.width) {
-                offsetX = scrollView.contentSize.width - scrollView.bounds.width
-            }
-            scrollView.setContentOffset(CGPoint(x: offsetX, y : 0), animated: true)
-        }
+        contentViewDidEndScroll()
         
         // 5.调整bottomLine位置
         if style.isShowBottomLine {
@@ -231,6 +222,28 @@ extension SLTitleView {
                 self.coverView.frame.size.width = coverW
             })
         }
+    }
+    
+    fileprivate func contentViewDidEndScroll() {
+        // 0.如果是不需要滚动,则不需要调整中间位置
+        guard style.isScrollEnable else { return }
+        
+        // 1.获取获取目标的Label
+        let targetLabel = titleLabels[currentIndex]
+        
+        // 2.计算和中间位置的偏移量
+        var offSetX = targetLabel.center.x - bounds.width * 0.5
+        if offSetX < 0 {
+            offSetX = 0
+        }
+        
+        let maxOffset = scrollView.contentSize.width - bounds.width
+        if offSetX > maxOffset {
+            offSetX = maxOffset
+        }
+        
+        // 3.滚动UIScrollView
+        scrollView.setContentOffset(CGPoint(x: offSetX, y: 0), animated: true)
     }
 }
 

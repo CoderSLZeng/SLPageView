@@ -46,8 +46,6 @@ class ViewController: UIViewController {
         // 1.标题
         let titles = ["游戏", "娱乐", "趣玩", "美女", "颜值"]
         let style = SLTitleStyle()
-        // style.titleHeight = 44
-        //        style.isScrollEnable = true
         style.isShowBottomLine = true
         style.isShowCover = true
         
