@@ -40,4 +40,9 @@ class SLTitleStyle {
     var coverHeight : CGFloat = 25
     /// 设置圆角大小
     var coverRadius : CGFloat = 12
+    
+    /// 是否进行缩放
+    var isNeedScale : Bool = false
+    var scaleRange : CGFloat = 1.2
+    
 }

@@ -48,6 +48,7 @@ class ViewController: UIViewController {
         let style = SLTitleStyle()
         style.isShowBottomLine = true
         style.isShowCover = true
+        style.isNeedScale = true
         
         // 2.计算所有的子控制器
         var childVcs = [UIViewController]()

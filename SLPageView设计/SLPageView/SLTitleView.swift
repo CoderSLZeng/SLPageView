@@ -131,6 +131,10 @@ extension SLTitleView {
                     if style.isShowBottomLine {
                         bottomLine.frame.origin.x = x
                         bottomLine.frame.size.width = w
+                        
+                        let scale = style.isNeedScale ? style.scaleRange : 1.0
+                        label.transform = CGAffineTransform(scaleX: scale, y: scale)
+
                     }
                 } else {
                     let preLabel = titleLabels[i - 1]
@@ -212,7 +216,15 @@ extension SLTitleView {
             })
         }
         
-        // 6.遮盖移动
+        
+        // 6.调整比例
+        if style.isNeedScale {
+            sourceLabel.transform = CGAffineTransform.identity
+            targetLabel.transform = CGAffineTransform(scaleX: style.scaleRange, y: style.scaleRange)
+
+        }
+        
+        // 7.遮盖移动
         if style.isShowCover {
             
             let coverX = style.isScrollEnable ? (targetLabel.frame.origin.x - style.coverMargin) : targetLabel.frame.origin.x
@@ -274,7 +286,14 @@ extension SLTitleView : SLContentViewDelegate {
             bottomLine.frame.size.width = sourceLabel.frame.width + moveTotalW * progress
         }
         
-        // 4.计算cover的滚动
+        // 4.放大的比例
+        if style.isNeedScale {
+            let scaleDelta = (style.scaleRange - 1.0) * progress
+            sourceLabel.transform = CGAffineTransform(scaleX: style.scaleRange - scaleDelta, y: style.scaleRange - scaleDelta)
+            targetLabel.transform = CGAffineTransform(scaleX: 1.0 + scaleDelta, y: 1.0 + scaleDelta)
+        }
+        
+        // 5.计算cover的滚动
         if style.isShowCover {
             coverView.frame.size.width = style.isScrollEnable ? (sourceLabel.frame.width + 2 * style.coverMargin + moveTotalW * progress) : (sourceLabel.frame.width + moveTotalW * progress)
             coverView.frame.origin.x = style.isScrollEnable ? (sourceLabel.frame.origin.x - style.coverMargin + moveTotalX * progress) : (sourceLabel.frame.origin.x + moveTotalX * progress)
