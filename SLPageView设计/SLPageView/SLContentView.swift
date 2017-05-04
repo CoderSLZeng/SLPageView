@@ -10,9 +10,11 @@ import UIKit
 
 private let kContentCellID = "kContentCellID"
 
-protocol SLContentViewDelegate : class {
-    func contentView(_ contentView : SLContentView, targetIndex : Int)
-    func contentView(_ contentView : SLContentView, targetIndex : Int, progress : CGFloat)
+@objc protocol SLContentViewDelegate : class {
+//    func contentView(_ contentView : SLContentView, targetIndex : Int)
+    func contentView(_ contentView : SLContentView, targetIndex : Int, sourceIndex : Int, progress : CGFloat)
+    
+     @objc optional func contentViewEndScroll(_ contentView : SLContentView)
 }
 
 class SLContentView: UIView {
@@ -94,71 +96,82 @@ extension SLContentView : UICollectionViewDataSource {
 // MARK:- UICollectionView的delegate
 extension SLContentView : UICollectionViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        contentEndScroll()
+        delegate?.contentViewEndScroll?(self)
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
-            contentEndScroll()
+            delegate?.contentViewEndScroll?(self)
         }
-    }
-    
-    private func contentEndScroll() {
-        // 0.判断是否是禁止状态
-        guard isForbidScroll else { return }
-        
-        // 1.获取滚动到的位置
-        let currentIndex = Int(collectionView.contentOffset.x / collectionView.bounds.width)
-        
-        // 2.通知titleView进行调整
-        delegate?.contentView(self, targetIndex: currentIndex)
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         
-        isForbidScroll = true
+        isForbidScroll = false
         
         startOffsetX = scrollView.contentOffset.x
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // 0.判断和开始时的偏移量是否一致
-        guard startOffsetX != scrollView.contentOffset.x, !isForbidScroll else {
-            return
-        }
         
-        // 1.定义targetIndex/progress
-        var targetIndex = 0
-        var progress : CGFloat = 0.0
+        // 0.判断是否是点击事件
+        if isForbidScroll { return }
         
-        // 2.给targetIndex/progress赋值
-        let currentIndex = Int(startOffsetX / scrollView.bounds.width)
-        if startOffsetX < scrollView.contentOffset.x { // 左滑动
-            targetIndex = currentIndex + 1
-            if targetIndex > childVcs.count - 1 {
+        // 1.定义获取需要的数据
+        var progress : CGFloat = 0
+        var sourceIndex : Int = 0
+        var targetIndex : Int = 0
+        
+        // 2.判断是左滑还是右滑
+        let currentOffsetX = scrollView.contentOffset.x
+        let scrollViewW = scrollView.bounds.width
+        if currentOffsetX > startOffsetX { // 左滑
+            // 1.计算progress
+            progress = currentOffsetX / scrollViewW - floor(currentOffsetX / scrollViewW)
+            
+            // 2.计算sourceIndex
+            sourceIndex = Int(currentOffsetX / scrollViewW)
+            
+            // 3.计算targetIndex
+            targetIndex = sourceIndex + 1
+            if targetIndex >= childVcs.count {
                 targetIndex = childVcs.count - 1
             }
             
-            progress = (scrollView.contentOffset.x - startOffsetX) / scrollView.bounds.width
-        } else { // 右滑动
-            targetIndex = currentIndex - 1
-            if targetIndex < 0 {
-                targetIndex = 0
+            // 4.如果完全划过去
+            if currentOffsetX - startOffsetX == scrollViewW {
+                progress = 1
+                targetIndex = sourceIndex
             }
+        } else { // 右滑
+            // 1.计算progress
+            progress = 1 - (currentOffsetX / scrollViewW - floor(currentOffsetX / scrollViewW))
             
-            progress = (startOffsetX - scrollView.contentOffset.x) / scrollView.bounds.width
+            // 2.计算targetIndex
+            targetIndex = Int(currentOffsetX / scrollViewW)
+            
+            // 3.计算sourceIndex
+            sourceIndex = targetIndex + 1
+            if sourceIndex >= childVcs.count {
+                sourceIndex = childVcs.count - 1
+            }
         }
         
-        // 3.通知代理
-        delegate?.contentView(self, targetIndex: targetIndex, progress: progress)
+        // 3.将progress/sourceIndex/targetIndex传递给titleView
+        delegate?.contentView(self, targetIndex: targetIndex, sourceIndex: sourceIndex, progress: progress)
     }
 }
 
 
 // MARK:- 遵守SLTitleViewDelegate
 extension SLContentView : SLTitleViewDelegate {
+    // 1.记录需要进制执行滚动法
     func titleView(_ titleView: SLTitleView, targetIndex: Int) {
         isForbidScroll = true
+        
+        // 2.滚动正确的位置
+//        let offsetX = CGFloat(targetIndex) * collectionView.frame.width
+//        collectionView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: false)
         
         let indexPath = IndexPath(item: targetIndex, section: 0)
         collectionView.scrollToItem(at: indexPath, at: .left, animated: false)

@@ -236,7 +236,56 @@ extension SLTitleView {
         }
     }
     
-    fileprivate func contentViewDidEndScroll() {
+    
+}
+
+
+// MARK:- 遵守SLContentViewDelegate
+extension SLTitleView : SLContentViewDelegate {
+    func contentView(_ contentView: SLContentView, targetIndex: Int) {
+        adjustTitleLabel(targetIndex: targetIndex)
+    }
+    
+    func contentView(_ contentView: SLContentView, targetIndex: Int, sourceIndex: Int, progress: CGFloat) {
+        // 1.取出Label
+        let targetLabel = titleLabels[targetIndex]
+        let sourceLabel = titleLabels[sourceIndex]
+        
+        // 2.颜色渐变
+        let deltaRGB = UIColor.getRGBDelta(style.selectedColor, style.normalColor)
+        let selectRGB = style.selectedColor.getRGB()
+        let normalRGB = style.normalColor.getRGB()
+        targetLabel.textColor = UIColor(r: normalRGB.0 + deltaRGB.0 * progress, g: normalRGB.1 + deltaRGB.1 * progress, b: normalRGB.2 + deltaRGB.2 * progress)
+        sourceLabel.textColor = UIColor(r: selectRGB.0 - deltaRGB.0 * progress, g: selectRGB.1 - deltaRGB.1 * progress, b: selectRGB.2 - deltaRGB.2 * progress)
+        
+        let moveTotalX = targetLabel.frame.origin.x - sourceLabel.frame.origin.x
+        let moveTotalW = targetLabel.frame.width - sourceLabel.frame.width
+        
+        currentIndex = targetIndex
+        
+        // 3.bottomLine渐变过程
+        if style.isShowBottomLine {
+            bottomLine.frame.origin.x = sourceLabel.frame.origin.x + moveTotalX * progress
+            bottomLine.frame.size.width = sourceLabel.frame.width + moveTotalW * progress
+        }
+        
+        // 4.放大的比例
+        if style.isNeedScale {
+            let scaleDelta = (style.scaleRange - 1.0) * progress
+            sourceLabel.transform = CGAffineTransform(scaleX: style.scaleRange - scaleDelta, y: style.scaleRange - scaleDelta)
+            targetLabel.transform = CGAffineTransform(scaleX: 1.0 + scaleDelta, y: 1.0 + scaleDelta)
+        }
+        
+        // 5.计算cover的滚动
+        if style.isShowCover {
+            coverView.frame.size.width = style.isScrollEnable ? (sourceLabel.frame.width + 2 * style.coverMargin + moveTotalW * progress) : (sourceLabel.frame.width + moveTotalW * progress)
+            coverView.frame.origin.x = style.isScrollEnable ? (sourceLabel.frame.origin.x - style.coverMargin + moveTotalX * progress) : (sourceLabel.frame.origin.x + moveTotalX * progress)
+        }
+
+    }
+    
+    
+    func contentViewDidEndScroll() {
         // 0.如果是不需要滚动,则不需要调整中间位置
         guard style.isScrollEnable else { return }
         
@@ -256,48 +305,6 @@ extension SLTitleView {
         
         // 3.滚动UIScrollView
         scrollView.setContentOffset(CGPoint(x: offSetX, y: 0), animated: true)
-    }
-}
-
-
-// MARK:- 遵守SLContentViewDelegate
-extension SLTitleView : SLContentViewDelegate {
-    func contentView(_ contentView: SLContentView, targetIndex: Int) {
-        adjustTitleLabel(targetIndex: targetIndex)
-    }
-    
-    func contentView(_ contentView: SLContentView, targetIndex: Int, progress: CGFloat) {
-        // 1.取出Label
-        let targetLabel = titleLabels[targetIndex]
-        let sourceLabel = titleLabels[currentIndex]
-        
-        // 2.颜色渐变
-        let deltaRGB = UIColor.getRGBDelta(style.selectedColor, style.normalColor)
-        let selectRGB = style.selectedColor.getRGB()
-        let normalRGB = style.normalColor.getRGB()
-        targetLabel.textColor = UIColor(r: normalRGB.0 + deltaRGB.0 * progress, g: normalRGB.1 + deltaRGB.1 * progress, b: normalRGB.2 + deltaRGB.2 * progress)
-        sourceLabel.textColor = UIColor(r: selectRGB.0 - deltaRGB.0 * progress, g: selectRGB.1 - deltaRGB.1 * progress, b: selectRGB.2 - deltaRGB.2 * progress)
-        
-        let moveTotalX = targetLabel.frame.origin.x - sourceLabel.frame.origin.x
-        let moveTotalW = targetLabel.frame.width - sourceLabel.frame.width
-        // 3.bottomLine渐变过程
-        if style.isShowBottomLine {
-            bottomLine.frame.origin.x = sourceLabel.frame.origin.x + moveTotalX * progress
-            bottomLine.frame.size.width = sourceLabel.frame.width + moveTotalW * progress
-        }
-        
-        // 4.放大的比例
-        if style.isNeedScale {
-            let scaleDelta = (style.scaleRange - 1.0) * progress
-            sourceLabel.transform = CGAffineTransform(scaleX: style.scaleRange - scaleDelta, y: style.scaleRange - scaleDelta)
-            targetLabel.transform = CGAffineTransform(scaleX: 1.0 + scaleDelta, y: 1.0 + scaleDelta)
-        }
-        
-        // 5.计算cover的滚动
-        if style.isShowCover {
-            coverView.frame.size.width = style.isScrollEnable ? (sourceLabel.frame.width + 2 * style.coverMargin + moveTotalW * progress) : (sourceLabel.frame.width + moveTotalW * progress)
-            coverView.frame.origin.x = style.isScrollEnable ? (sourceLabel.frame.origin.x - style.coverMargin + moveTotalX * progress) : (sourceLabel.frame.origin.x + moveTotalX * progress)
-        }
     }
     
 }
