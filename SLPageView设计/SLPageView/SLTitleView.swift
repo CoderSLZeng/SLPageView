@@ -239,14 +239,9 @@ extension SLTitleView {
     
 }
 
-
-// MARK:- 遵守SLContentViewDelegate
-extension SLTitleView : SLContentViewDelegate {
-    func contentView(_ contentView: SLContentView, targetIndex: Int) {
-        adjustTitleLabel(targetIndex: targetIndex)
-    }
-    
-    func contentView(_ contentView: SLContentView, targetIndex: Int, sourceIndex: Int, progress: CGFloat) {
+// MARK: - 对外暴露的函数
+extension SLTitleView {
+    func setTitleWithProgress(_ progress : CGFloat, sourceIndex : Int, targetIndex : Int) {
         // 1.取出Label
         let targetLabel = titleLabels[targetIndex]
         let sourceLabel = titleLabels[sourceIndex]
@@ -307,4 +302,17 @@ extension SLTitleView : SLContentViewDelegate {
         scrollView.setContentOffset(CGPoint(x: offSetX, y: 0), animated: true)
     }
     
+}
+
+
+
+// MARK:- 遵守SLContentViewDelegate
+extension SLTitleView : SLContentViewDelegate {
+    func contentView(_ contentView: SLContentView, targetIndex: Int) {
+        adjustTitleLabel(targetIndex: targetIndex)
+    }
+    
+    func contentView(_ contentView: SLContentView, targetIndex: Int, sourceIndex: Int, progress: CGFloat) {
+        setTitleWithProgress(progress, sourceIndex: sourceIndex, targetIndex: targetIndex)
+    }
 }

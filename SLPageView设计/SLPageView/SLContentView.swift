@@ -11,10 +11,10 @@ import UIKit
 private let kContentCellID = "kContentCellID"
 
 @objc protocol SLContentViewDelegate : class {
-//    func contentView(_ contentView : SLContentView, targetIndex : Int)
+
     func contentView(_ contentView : SLContentView, targetIndex : Int, sourceIndex : Int, progress : CGFloat)
     
-     @objc optional func contentViewEndScroll(_ contentView : SLContentView)
+    @objc optional func contentViewEndScroll(_ contentView : SLContentView)
 }
 
 class SLContentView: UIView {

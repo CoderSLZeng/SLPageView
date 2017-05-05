@@ -17,7 +17,7 @@ class ViewController: UIViewController {
         
         automaticallyAdjustsScrollViewInsets = false
         
-        tesetPageView()
+        testPageCollectionView()
     }
     
     fileprivate func testPageCollectionView() {
@@ -31,8 +31,8 @@ class ViewController: UIViewController {
         layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
-        layout.cols = 7
-        layout.rows = 3
+        layout.cols = 4
+        layout.rows = 2
         
         let pageCollectionView = SLPageCollectionView(frame: pageFrame, titles: titles, style: style, isTitleInTop: false, layout: layout)
         
@@ -69,11 +69,16 @@ class ViewController: UIViewController {
 
 extension ViewController : SLPageCollectionViewDataSource {
     func numberOfSections(in pageCollectionView: SLPageCollectionView) -> Int {
-        return 4
+        return 2
     }
     
     func pageCollectionView(_ collectionView: SLPageCollectionView, numberOfItemsInSection section: Int) -> Int {
-        return Int(arc4random_uniform(30)) + 25
+        
+        if section == 0 {
+            return 20
+        } else {
+            return 14
+        }
     }
     
     func pageCollectionView(_ pageCollectionView: SLPageCollectionView, _ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -84,4 +89,3 @@ extension ViewController : SLPageCollectionViewDataSource {
         return cell
     }
 }
-
